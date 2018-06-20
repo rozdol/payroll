@@ -1,11 +1,11 @@
-PHP Class for various functions
-===============================
+PHP Class for Payroll for Cyprus
+===============================+
 
 
 About
 -----
 
-To be used in local projects and libraries.
+Payroll for Cyprus
 
 Install
 -------
@@ -13,23 +13,24 @@ Install
 cd to `your_project_root_dir`
 
 ```bash
-composer require rozdol/utils:"v1.*"
+composer require rozdol/payroll:"v1.*"
 ```
 
 in Table or Model or Controller
 
 ```php
-use Rozdol\Dates\Dates;
-$this->utils = new Dates();
-$date_normalized = $this->utils->F_date('01/01/20', 1); // 01.01.2020
+use Rozdol\Payroll\Payroll;
+$this->payroll = new Payroll();
+$data=[...];
+$result = $this->utils->payslip($data);
 ```
 
 ### Unit Test
 
-`cd utils`
+`cd payroll`
 
 ```bash
-composer update rozdol/utils
+composer update rozdol/payroll
 ```
 
 To test
@@ -40,7 +41,7 @@ To test
 ## Compose library Tutorial
 
 ```bash
-cd utils
+cd payroll
 composer update
 git init
 git .
@@ -50,29 +51,29 @@ git commit -m 'Initial commit'
 Create github repo
 
 ```bash
-git remote add origin git@github.com:rozdol/utils.git
+git remote add origin git@github.com:rozdol/payroll.git
 git push origin master
 ```
 
 - on github add new release (v1.0.0)
 - On packagist Update Package
 - Login to [packagist.org](https://packagist.org/)
-- Submit `https://github.com/rozdol/utils`
+- Submit `https://github.com/rozdol/payroll`
 
 ### Ready to use in project
 
 cd to `your_project_root_dir`
 
 ```bash
-composer require rozdol/utils:"v1.*"
+composer require rozdol/payroll:"v1.*"
 ```
 
 in Table or Model or Controller
 
 ```php
-use Rozdol\Dates\Dates;
-$this->utils = new Dates();
-$date_normalized = $this->utils->F_date('01/01/20', 1); // 01.01.2020
+use Rozdol\Payroll\Payroll;
+$this->payroll = new Payroll();
+$date_normalized = $this->payroll->F_date('01/01/20', 1); // 01.01.2020
 ```
 
 
@@ -100,11 +101,11 @@ mkdir TestCase
 cd TestCase
 mkdir Funcs
 ```
-edit `DatesTest.php`
+edit `PayrollTest.php`
 
-`cd utils`
+`cd payroll`
 ```bash
-composer update rozdol/utils
+composer update rozdol/payroll
 ```
 
 To test
@@ -149,6 +150,6 @@ Add Service: click
 ```bash
 git remote -v
 git remote remove origin
-git remote add origin git@github.com:rozdol/utils.git
+git remote add origin git@github.com:rozdol/payroll.git
 git push origin random_changes
 ```
