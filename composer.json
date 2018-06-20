@@ -1,0 +1,35 @@
+{
+    "name": "rozdol/payroll",
+    "description": "Payroll for Cyprus",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alex Titoff",
+            "email": "rozdol@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:rozdol/bi.git"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "rozdol/bi": "1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rozdol\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\Rozdol\\": "tests"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
