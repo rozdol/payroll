@@ -1,5 +1,5 @@
 PHP Class for Payroll for Cyprus
-===============================+
+================================
 
 
 About
@@ -65,7 +65,7 @@ git push origin master
 cd to `your_project_root_dir`
 
 ```bash
-composer require rozdol/payroll:"v1.*"
+composer require rozdol/payroll
 ```
 
 in Table or Model or Controller

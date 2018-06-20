@@ -30,7 +30,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\Rozdol\\": "tests"
+            "Test\\Rozdol\\": "tests",
+            "Rozdol\\Data\\": "../components/bi/src/Bi",
+            "Rozdol\\Dates\\": "../components/bi/src/Utils",
+            "Rozdol\\Utils\\": "../components/bi/src/Utils",
+            "Rozdol\\Html\\": "../components/bi/src/Utils"
         }
     },
     "require-dev": {
