@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": ">=5.6",
-        "rozdol/bi": "1.*"
+        "rozdol/bi": "dev-master"
     },
     "autoload": {
         "psr-4": {
