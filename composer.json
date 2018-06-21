@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": ">=5.6",
-        "rozdol/bi": "@dev"
+        "rozdol/bi": "1.*"
     },
     "minimum-stability": "dev",
     "autoload": {
