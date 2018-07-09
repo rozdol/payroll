@@ -74,11 +74,21 @@ class Payroll
         $payslip[thirteenth]=$annual_salary[thirteenth];
         $payslip[avg_salary]=$annual_salary[avg_salary];
 
+
+        /// Anual extra income
+        $annual_extra_income=$this->calc_annual_salary($payslip[date], $payslip[extra_income], 12);
+        if ($annual_extra_income[annual_salary]>0) {
+            $payslip[annual_info].="Employee has $annual_extra_income[annual_salary] extra anual income received from the 3rd patry.\n";
+        }
+        $payslip[annual_extra_income]=$annual_extra_income[annual_salary];
+
+
+        /// Anual allowances
         $annual_allowance=$this->calc_annual_salary($payslip[date], $payslip[allowances], 12);
         if ($annual_allowance[annual_salary]>0) {
             $payslip[annual_info].="Employee has $annual_allowance[annual_salary] allowance on anunal income tax amount for Life Insuranse\n";
         }
-        $payslip[$annual_allowance_life_insur]=$annual_allowance[annual_salary];
+        $payslip[annual_allowance_life_insur]=$annual_allowance[annual_salary];
 
         $amount_si = $this->calc_tax($payslip[avg_salary], $deductions[si][calc])[tax];
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
@@ -90,7 +100,10 @@ class Payroll
             $payslip[annual_info].="Employee has 50% allowance on anunal income tax amount\n";
             $payslip[annual_allowance]=$payslip[annual_allowance]+($payslip[annual_salary]/2);
         }
-        $payslip[annual_taxable_amount]=$payslip[annual_salary]-$payslip[annual_allowance];
+
+
+
+        $payslip[annual_taxable_amount]=$payslip[annual_salary]-$payslip[annual_allowance]+$payslip[annual_extra_income];
 
         $payslip[last_salary] = $this->salary($payslip[date], $salaries);
         if ($payslip[no]>12) {
