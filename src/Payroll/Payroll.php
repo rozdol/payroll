@@ -108,7 +108,7 @@ class Payroll
         $payslip[last_salary] = $this->salary($payslip[date], $salaries);
         if ($payslip[no]>12) {
             if ($payslip[last_salary_set]!=$payslip[thirteenth]) {
-                $payslip[annual_info].="\nThe $payslip[no]th salary is ".$this->money($payslip[thirteenth])." not as it was monthly ".$this->money($payslip[last_salary_set])." ";
+                $payslip[annual_info].="\nThe $payslip[no]th salary (EUR ".$this->html->money($payslip[thirteenth])."). It is noted that the employee commenced employment or changed his possition on ".$payslip[epmloyee][df].".";
             }
             $payslip[last_salary]=$payslip[thirteenth];
             $payslip[last_salary_set]=$payslip[thirteenth];
