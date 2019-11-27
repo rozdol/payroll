@@ -74,6 +74,7 @@ class Payroll
         $payslip[thirteenth]=$annual_salary[thirteenth];
         $payslip[avg_salary]=$annual_salary[avg_salary];
 
+        $payslip[last_salary] = $this->salary($payslip[date], $salaries);
 
         /// Anual extra income
         $annual_extra_income=$this->calc_annual_salary($payslip[date], $payslip[extra_income], 12);
@@ -88,13 +89,18 @@ class Payroll
         if ($annual_allowance[annual_salary]>0) {
             $payslip[annual_info].="Employee has $annual_allowance[annual_salary] allowance on anunal income tax amount for Life Insuranse\n";
         }
+        //$payslip[annual_allowance_life_insur_data]=$annual_allowance;
         $payslip[annual_allowance_life_insur]=$annual_allowance[annual_salary];
+
+        //$payslip[annual_allowance_gesy_test]=$payslip[last_salary];
+        $payslip[annual_allowance_gesy]=$payslip[deductions][health][calc][0]*$payslip[last_salary]*$payslip[epmloyee][salaries_per_year];
+
 
         $amount_si = $this->calc_tax($payslip[avg_salary], $deductions[si][calc])[tax];
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
         $payslip[amount_si] = $amount_si;
         $payslip[annual_si] = $annual_si;
-        $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si;
+        $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si+$payslip[annual_allowance_gesy];
         //echo "NR:".$payslip[epmloyee][non_resident]."<br>";
         if (($payslip[annual_salary]>100000)&&($payslip[epmloyee][non_resident]=='t')) {
             $payslip[annual_info].="Employee has 50% allowance on anunal income tax amount\n";
@@ -105,7 +111,7 @@ class Payroll
 
         $payslip[annual_taxable_amount]=$payslip[annual_salary]-$payslip[annual_allowance]+$payslip[annual_extra_income];
 
-        $payslip[last_salary] = $this->salary($payslip[date], $salaries);
+
         if ($payslip[no]>12) {
             if ($payslip[last_salary_set]!=$payslip[thirteenth]) {
                 $payslip[annual_info].="\nThe $payslip[no]th salary (EUR ".$this->html->money($payslip[thirteenth])."). It is noted that the employee commenced employment or changed his possition on ".$payslip[epmloyee][df].".";
