@@ -100,7 +100,12 @@ class Payroll
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
         $payslip[amount_si] = $amount_si;
         $payslip[annual_si] = $annual_si;
-        $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si+$payslip[annual_allowance_gesy];
+        if($GLOBALS['NoGESY']){
+            $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si;
+        }else{
+            $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si+$payslip[annual_allowance_gesy];
+        }
+
         //echo "NR:".$payslip[epmloyee][non_resident]."<br>";
         if (($payslip[annual_salary]>100000)&&($payslip[epmloyee][non_resident]=='t')) {
             $payslip[annual_info].="Employee has 50% allowance on anunal income tax amount\n";
@@ -129,10 +134,17 @@ class Payroll
                 $amount=0;
                 $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title]";
             };
+
             $tax = $this->calc_tax($amount, $value[calc]);
             if ($value[base]=='y') {
                 $tax[tax]=round($tax[tax]/12, 2);
             }
+
+            if (($GLOBALS['incoime_tax_adjustment_amount']<>0)&&($value[title]=='Income tax')) {
+                $tax[tax]=$tax[tax]+$GLOBALS['incoime_tax_adjustment_amount'];
+                $payslip[annual_info].="\nEmployee has adjustment of $GLOBALS[incoime_tax_adjustment_amount] for $value[title] due to $GLOBALS[incoime_tax_adjustment_reason].";
+            };
+            if($tax[tax]<0)$tax[tax]=0;
             $emply_tax[]=[
                 'title' => $value[title],
                 'amount' => $tax[tax],
