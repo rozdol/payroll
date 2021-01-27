@@ -95,15 +95,21 @@ class Payroll
         //$payslip[annual_allowance_gesy_test]=$payslip[last_salary];
         $payslip[annual_allowance_gesy]=$payslip[deductions][health][calc][0]*$payslip[last_salary]*$payslip[epmloyee][salaries_per_year];
 
+        $payslip[annual_allowance_donations]=300;
 
         $amount_si = $this->calc_tax($payslip[avg_salary], $deductions[si][calc])[tax];
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
         $payslip[amount_si] = $amount_si;
         $payslip[annual_si] = $annual_si;
+        $payslip[annual_allowance_salary] = $annual_allowance[annual_salary];
         if($GLOBALS['NoGESY']){
-            $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si;
+            $payslip[annual_allowance]=$annual_allowance[annual_salary]+$payslip[annual_si]+$payslip[annual_allowance_donations];
         }else{
-            $payslip[annual_allowance]=$annual_allowance[annual_salary]+$annual_si+$payslip[annual_allowance_gesy];
+            $payslip[annual_allowance]=
+            $annual_allowance[annual_salary]+
+            $payslip[annual_si]+
+            $payslip[annual_allowance_gesy]+
+            $payslip[annual_allowance_donations];
         }
 
         //echo "NR:".$payslip[epmloyee][non_resident]."<br>";
