@@ -99,6 +99,7 @@ class Payroll
 
         $amount_si = $this->calc_tax($payslip[avg_salary], $deductions[si][calc])[tax];
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
+        if(($payslip[annual_salary]>57408)&&($payslip[epmloyee][salaries_per_year]>12))$annual_si=$amount_si*($payslip[epmloyee][salaries_per_year]-1);
         $payslip[amount_si] = $amount_si;
         $payslip[annual_si] = $annual_si;
         $payslip[annual_allowance_salary] = $annual_allowance[annual_salary];
