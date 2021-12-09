@@ -142,6 +142,11 @@ class Payroll
                 $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title]";
             };
 
+            if (($payslip[no]>12)&&($payslip[annual_salary]>57408)&&($value[title]=='Social Insurance tax')) {
+                $amount=0;
+               // $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title] due to annual saly exceeding the amount of  57 408 Euros";
+            };
+
             $tax = $this->calc_tax($amount, $value[calc]);
             if ($value[base]=='y') {
                 $tax[tax]=round($tax[tax]/12, 2);
@@ -169,6 +174,12 @@ class Payroll
             if ($value[base]=='y') {
                 $amount=$payslip[annual_taxable_amount];
             }
+
+            if (($payslip[no]>12)&&($payslip[annual_salary]>57408)&&(($value[title]=='Industrial fund')||($value[title]=='Redundancy fund')||($value[title]=='Social Insurance tax'))) {
+                $amount=0;
+               // $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title] due to annual saly exceeding the amount of  57 408 Euros";
+            };
+
             $tax = $this->calc_tax($amount, $value[calc]);
             if ($value[base]=='y') {
                 $tax[tax]=round($tax[tax]/12, 2);
