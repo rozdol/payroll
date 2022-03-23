@@ -26,6 +26,8 @@ class Payroll
 
     public function payslip($payslip = [])
     {
+        $si_annual_max=57408; # 2021
+        $si_annual_max=58080; # 2022
         //echo $this->html->pre_display($payslip,"payslip");
         //Get dates
         if ($payslip[no]>$payslip[epmloyee][salaries_per_year]) {
@@ -99,7 +101,7 @@ class Payroll
 
         $amount_si = $this->calc_tax($payslip[avg_salary], $deductions[si][calc])[tax];
         $annual_si=$amount_si*$payslip[epmloyee][salaries_per_year];
-        if(($payslip[annual_salary]>57408)&&($payslip[epmloyee][salaries_per_year]>12))$annual_si=$amount_si*($payslip[epmloyee][salaries_per_year]-1);
+        if(($payslip[annual_salary]>$si_annual_max)&&($payslip[epmloyee][salaries_per_year]>12))$annual_si=$amount_si*($payslip[epmloyee][salaries_per_year]-1);
         $payslip[amount_si] = $amount_si;
         $payslip[annual_si] = $annual_si;
         $payslip[annual_allowance_salary] = $annual_allowance[annual_salary];
@@ -117,6 +119,15 @@ class Payroll
         if (($payslip[annual_salary]>100000)&&($payslip[epmloyee][non_resident]=='t')) {
             $payslip[annual_info].="Employee has 50% allowance on anunal income tax amount\n";
             $payslip[annual_allowance]=$payslip[annual_allowance]+($payslip[annual_salary]/2);
+        }
+        // $payslip[epmloyee][non_resident_before_employment]='t';
+        //echo "NR:".$payslip[epmloyee][non_resident]."<br>";
+        if ($payslip[epmloyee][non_resident_before_employment]=='t') {
+            $payslip[annual_info].="Employee has 20% allowance on anunal income tax amount as being not resident of Cyprus before the commencement
+of his employment.\n";
+            $allowance_20=$payslip[annual_salary]*0.2;
+            if($allowance_20>=8550)$allowance_20=8550;
+            $payslip[annual_allowance]=$payslip[annual_allowance]+$allowance_20;
         }
 
 
@@ -142,7 +153,7 @@ class Payroll
                 $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title]";
             };
 
-            if (($payslip[no]>12)&&($payslip[annual_salary]>57408)&&($value[title]=='Social Insurance tax')) {
+            if (($payslip[no]>12)&&($payslip[annual_salary]>$si_annual_max)&&($value[title]=='Social Insurance tax')) {
                 $amount=0;
                // $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title] due to annual saly exceeding the amount of  57 408 Euros";
             };
@@ -175,7 +186,7 @@ class Payroll
                 $amount=$payslip[annual_taxable_amount];
             }
 
-            if (($payslip[no]>12)&&($payslip[annual_salary]>57408)&&(($value[title]=='Industrial fund')||($value[title]=='Redundancy fund')||($value[title]=='Social Insurance tax'))) {
+            if (($payslip[no]>12)&&($payslip[annual_salary]>$si_annual_max)&&(($value[title]=='Industrial fund')||($value[title]=='Redundancy fund')||($value[title]=='Social Insurance tax'))) {
                 $amount=0;
                // $payslip[annual_info].="\nOn $payslip[no]th salary employee is exempt from $value[title] due to annual saly exceeding the amount of  57 408 Euros";
             };
