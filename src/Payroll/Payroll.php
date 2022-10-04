@@ -68,18 +68,32 @@ class Payroll
         $year=$this->dates->F_extractyear($payslip[date]);
         $payslip[year]=$year;
 
-        $annual_salary=$this->calc_annual_salary($payslip[date], $payslip[salaries], $payslip[epmloyee][salaries_per_year]);
+        $payslip[start_date]="01.".$this_month.".".$year;
 
-        //echo $this->html->html->pre_display($annual_salary,"annual_salary");
+        if ((($this->dates->is_earlier($payslip[start_date], $before_employment))||($this->dates->is_later($payslip[start_date], $payslip[epmloyee][dt])))&&($payslip[no]<=12)) {
+            $payslip[annual_info]="Emplyee was not emplyed at this date $payslip[date] ($before_employment - $after_employment)";
+            return $payslip;
+        }
+
+        $annual_salary=$this->calc_annual_salary($payslip[date], $payslip[salaries], $payslip[epmloyee][salaries_per_year], $payslip[no]);
+
+        // echo $this->html->pre_display($annual_salary,"annual_salary");
 
         $payslip[annual_salary]=$annual_salary[annual_salary];
         $payslip[thirteenth]=$annual_salary[thirteenth];
         $payslip[avg_salary]=$annual_salary[avg_salary];
 
-        $payslip[last_salary] = $this->salary($payslip[date], $salaries);
+        $is_employed = $this->is_employed($payslip[start_date], $payslip[salaries]);
+        // echo $this->html->pre_display($is_employed,"is_employed");
+        if ($is_employed[retired_this_month]>0){
+            $payslip[last_salary] = $annual_salary[last_salary];
+            $payslip[last_salary_set] = $payslip[last_salary];
+        }else{
+            $payslip[last_salary] = $this->salary($payslip[date], $salaries);
+        }
 
         /// Anual extra income
-        $annual_extra_income=$this->calc_annual_salary($payslip[date], $payslip[extra_income], 12);
+        $annual_extra_income=$this->calc_annual_salary($payslip[date], $payslip[extra_income], 12,$payslip[no]);
         if ($annual_extra_income[annual_salary]>0) {
             $payslip[annual_info].="Employee has $annual_extra_income[annual_salary] extra anual income received from the 3rd patry.\n";
         }
@@ -87,7 +101,7 @@ class Payroll
 
 
         /// Anual allowances
-        $annual_allowance=$this->calc_annual_salary($payslip[date], $payslip[allowances], 12);
+        $annual_allowance=$this->calc_annual_salary($payslip[date], $payslip[allowances], 12,$payslip[no]);
         if ($annual_allowance[annual_salary]>0) {
             $payslip[annual_info].="Employee has $annual_allowance[annual_salary] allowance on anunal income tax amount for Life Insuranse\n";
         }
@@ -167,6 +181,12 @@ of his employment.\n";
                 $tax[tax]=$tax[tax]+$GLOBALS['incoime_tax_adjustment_amount'];
                 $payslip[annual_info].="\nEmployee has adjustment of $GLOBALS[incoime_tax_adjustment_amount] for $value[title] due to $GLOBALS[incoime_tax_adjustment_reason].";
             };
+
+            if (($is_employed[retired_this_month]>0)&&($value[title]=='Income tax') && ($payslip[no]<12)) {
+                $tax[tax]=0;
+                $payslip[annual_info].="\nEmploymet contract is terminated on ".$payslip[epmloyee][dt];
+            };
+
             if($tax[tax]<0)$tax[tax]=0;
             $emply_tax[]=[
                 'title' => $value[title],
@@ -212,19 +232,20 @@ of his employment.\n";
         //echo $this->html->pre_display($payslip,"payslip");
         return $payslip;
     }
-    public function calc_annual_salary($date = '', $salaries = [], $salaries_count = 12)
+    public function calc_annual_salary($date = '', $salaries = [], $salaries_count = 12, $no=1)
     {
         $year=$this->dates->F_extractyear($date);
         //echo $this->html->pre_display($salaries,"salaries");
         $month_emplyed=0;
         $max_salary=0;
+        $last_salary=0;
         for ($month=1; $month <= 12; $month++) {
             $mo=sprintf('%02d', $month);
             $df="01.".$mo.".$year";
             $dt=$this->dates->lastday_in_month($df);
 
             $is_employed = $this->is_employed($df, $salaries);
-            //echo $this->html->pre_display($is_employed,"M:$month is_employed $df - $dt");
+            // echo $this->html->pre_display($is_employed,"M:$month is_employed $df - $dt");
             $annual_salary+=$is_employed[salary];
             //echo "$month $df - $dt S:$is_employed[salary] ($annual_salary)<br>";
             $info[]="$df-$dt = $is_employed[salary]";
@@ -234,9 +255,13 @@ of his employment.\n";
             if ($is_employed[salary]>$max_salary) {
                 $max_salary=$is_employed[salary];
             }
+            if($month==$no and $no<13)
+                $last_salary=$is_employed[salary];
         }
         //echo $this->html->pre_display($info,"info");
-        $last_salary=$is_employed[salary];
+        if ($last_salary==0) {
+            $last_salary=$is_employed[salary];
+        }
         $avg_salary=$annual_salary/12;
 
         if ($salaries_count>12) {
@@ -254,7 +279,8 @@ of his employment.\n";
         $data[month_emplyed]=$month_emplyed;
         $data[max_salary]=$max_salary;
         $data[extra_salary]=$extra_salary;
-        //echo $this->html->pre_display($data,"calc_annual_salary");
+        $data[no]=$no;
+        // echo $this->html->pre_display($data,"calc_annual_salary");
         return $data;
     }
     public function salary($date = '', $data = [])
@@ -336,7 +362,7 @@ of his employment.\n";
         $data[employed_this_month]=$employed_this_month;
         $data[retired_this_month]=$retired_this_month;
         $data[month_emplyed]=$month_emplyed;
-        //echo $this->html->pre_display($data,"is_employed");
+        // echo $this->html->pre_display($data,"is_employed");
         return $data;
     }
 
