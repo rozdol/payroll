@@ -28,6 +28,7 @@ class Payroll
     {
         $si_annual_max=57408; # 2021
         $si_annual_max=58080; # 2022
+        $si_annual_max=60060; # 2023
         //echo $this->html->pre_display($payslip,"payslip");
         //Get dates
         if ($payslip[no]>$payslip[epmloyee][salaries_per_year]) {
