@@ -104,7 +104,7 @@ class Payroll
         /// Anual allowances
         $annual_allowance=$this->calc_annual_salary($payslip[date], $payslip[allowances], 12,$payslip[no]);
         if ($annual_allowance[annual_salary]>0) {
-            $payslip[annual_info].="Employee has $annual_allowance[annual_salary] allowance on anunal income tax amount for Life Insuranse\n";
+            $payslip[annual_info].="Employee has $annual_allowance[annual_salary] allowance on anunal income tax amount for Life Insurance\n";
         }
         //$payslip[annual_allowance_life_insur_data]=$annual_allowance;
         $payslip[annual_allowance_life_insur]=$annual_allowance[annual_salary];
