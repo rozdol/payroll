@@ -29,6 +29,7 @@ class Payroll
         $si_annual_max=57408; # 2021
         $si_annual_max=58080; # 2022
         $si_annual_max=60060; # 2023
+        $si_annual_max=62868; # 2024
         //echo $this->html->pre_display($payslip,"payslip");
         //Get dates
         if ($payslip[no]>$payslip[epmloyee][salaries_per_year]) {
@@ -178,6 +179,11 @@ of his employment.\n";
                 $tax[tax]=round($tax[tax]/12, 2);
             }
 
+            if (($payslip['days_in_country']*1>0)&&($value[title]=='Income tax')) {
+                $tax[tax]=round($tax[tax]*($payslip['days_in_country']/365),2);
+                $payslip[annual_info].="\nEmployee has declared to be non-resident. Days of stay in the country is $payslip[days_in_country] days.";
+            };
+
             if (($GLOBALS['incoime_tax_adjustment_amount']<>0)&&($value[title]=='Income tax')) {
                 $tax[tax]=$tax[tax]+$GLOBALS['incoime_tax_adjustment_amount'];
                 $payslip[annual_info].="\nEmployee has adjustment of $GLOBALS[incoime_tax_adjustment_amount] for $value[title] due to $GLOBALS[incoime_tax_adjustment_reason].";
@@ -230,7 +236,7 @@ of his employment.\n";
         $to_date[deductions]=$payslip[deductions_total]*$payslip[no];
         $to_date[contributions]=$payslip[contributions_total]*$payslip[no];
         $payslip[to_date]=$to_date;
-        //echo $this->html->pre_display($payslip,"payslip");
+        // echo $this->html->pre_display($payslip,"payslip");
         return $payslip;
     }
     public function calc_annual_salary($date = '', $salaries = [], $salaries_count = 12, $no=1)
